@@ -5,6 +5,9 @@ import Link from "next/link";
 import React from "react";
 import localFont from "next/font/local";
 import { ArrowLeftCircleIcon } from "lucide-react";
+import ShowcaseCard from "@/components/showcase-card";
+import Loader from "@/components/loader";
+import ShowCaseLoader from "@/components/loader";
 
 const myFont = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
@@ -15,7 +18,7 @@ export default function ShowcasePage() {
     queryKey: ["posts"],
     queryFn: getAllPosts,
   });
-  if (isLoading) return <p>loading...</p>;
+  if (isLoading) return <ShowCaseLoader />;
   return (
     <div className="p-24">
       <div>
@@ -39,27 +42,3 @@ export default function ShowcasePage() {
     </div>
   );
 }
-
-const ShowcaseCard = ({ post }: { post: Post }) => {
-  return (
-    <div className="flex flex-col border-2 rounded-xl overflow-hidden">
-      <div className="flex-1 min-h-[400px] bg-white">
-        <iframe
-          srcDoc={post.body}
-          title={post.filename}
-          height="100%"
-          width="100%"
-        ></iframe>
-      </div>
-
-      <div className="px-4 py-2 h-[100px] border-neutral-500 bg-neutral-800 border-t-2 border-dashed">
-        <p>{post.filename}</p>
-
-        <p>{post.author}</p>
-        <Link href={`/post/${post._id}`}>
-          <p>show</p>
-        </Link>
-      </div>
-    </div>
-  );
-};
