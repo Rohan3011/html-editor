@@ -14,6 +14,7 @@ const myFont = localFont({
 
 export default function EditorPage() {
   const router = useRouter();
+  const filename = router.query.slug as string;
   const editorRef = useRef<any>(null);
   const [author, setAuthor] = useState("");
   const [htmlPreview, setHtmlPreview] = useState<any>("");
@@ -60,18 +61,34 @@ export default function EditorPage() {
     if (author.length < 2) return;
     mutation.mutate({
       author: author,
-      filename: String(router.query.slug),
+      filename: filename,
       body: htmlPreview,
     });
   };
 
+  const downloadHtml = () => {
+    if (!htmlPreview.trim()) {
+      alert("Please enter HTML content before downloading.");
+      return;
+    }
+
+    const blob = new Blob([htmlPreview], { type: "text/html" });
+    const link = document.createElement("a");
+
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+  };
+
   return (
     <>
-      <div className="p-4 flex">
-        <form
-          onSubmit={handleSubmit}
-          className={`flex gap-10 ${myFont.className}`}
-        >
+      <div className={`p-4 flex gap-6 items-center ${myFont.className}`}>
+        <form onSubmit={handleSubmit} className={`flex gap-6`}>
           <div className="flex w-full max-w-xl bg-neutral-50 rounded-2xl overflow-hidden shadow-[4px_4px_0px_1px_#353333] focus-within:shadow-[4px_4px_0px_1px_#313131] transition-all">
             <input
               type="text"
@@ -110,9 +127,15 @@ export default function EditorPage() {
             Submit
           </button>
         </form>
-
+        <button
+          onClick={downloadHtml}
+          className={`ml-auto flex justify-center items-center px-6 py-3 bg-white text-black rounded-2xl  shadow-[2px_2px_0px_1px_#353333] border active:scale-95 transition-all duration-150 uppercase  `}
+        >
+          <Download className="animate-pulse -ml-1 mr-3 h-5 w-5" />
+          Download
+        </button>
         {isSaving && (
-          <p className="ml-auto  px-6 py-3 flex justify-center items-center  bg-neutral-700 rounded-2xl overflow-hidden">
+          <p className="  px-6 py-3 flex justify-center items-center  bg-neutral-700 rounded-2xl overflow-hidden">
             <svg
               className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
               xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +165,7 @@ export default function EditorPage() {
           height="84vh"
           width={"720px"}
           defaultLanguage="html"
-          defaultValue="// some comment"
+          defaultValue="<!-- start typing -->"
           theme="vs-dark"
           onMount={handleEditorDidMount}
           onChange={handleAutoSave}
@@ -158,7 +181,7 @@ export default function EditorPage() {
       </div>
 
       <SuccessModal
-        filename={router.query.slug as string}
+        filename={filename}
         id={mutation.data?.data?._id ?? ""}
         open={showModal}
         handleClose={handleClose}
@@ -178,6 +201,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Download } from "lucide-react";
 
 type Props = {
   filename: string;
