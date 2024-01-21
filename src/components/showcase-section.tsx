@@ -5,6 +5,8 @@ import Link from "next/link";
 import React from "react";
 import localFont from "next/font/local";
 import { ArrowUpRight } from "lucide-react";
+import ShowcaseCard from "./showcase-card";
+import ShowCaseLoader from "./loader";
 
 const myFont = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
@@ -15,7 +17,7 @@ function Showcase() {
     queryKey: ["posts"],
     queryFn: getAllPosts,
   });
-  if (isLoading) return <p>loading...</p>;
+  if (isLoading) return <ShowCaseLoader />;
   return (
     <div className="p-24">
       <div className="relative ">
@@ -41,24 +43,3 @@ function Showcase() {
 }
 
 export default Showcase;
-
-const ShowcaseCard = ({ post }: { post: Post }) => {
-  return (
-    <div className="flex flex-col border-2 rounded-xl overflow-hidden">
-      <div className="flex-1 min-h-[400px] bg-white">
-        <iframe
-          srcDoc={post.body}
-          title={post.filename}
-          height="100%"
-          width="100%"
-        ></iframe>
-      </div>
-      <div className="px-4 py-2 h-[100px] border-neutral-500 bg-neutral-800 border-t-2 border-dashed">
-        <Link href={`/post/${post._id}`}>
-          <p>{post.filename}</p>
-        </Link>
-        <p>{post.author}</p>
-      </div>
-    </div>
-  );
-};

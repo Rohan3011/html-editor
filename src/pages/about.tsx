@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Showcase from "@/components/showcase";
+import Showcase from "@/components/showcase-section";
 
 const inter = Inter({ subsets: ["latin"] });
 
