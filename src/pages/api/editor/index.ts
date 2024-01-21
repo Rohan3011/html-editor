@@ -18,7 +18,7 @@ export default async function handler(
       break;
     case "GET":
       const allPosts = await postModel.find();
-      res.json({ status: 200, data: allPosts });
+      res.json(allPosts);
       break;
   }
 }
